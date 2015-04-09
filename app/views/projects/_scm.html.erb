@@ -1,0 +1,72 @@
+<% content_for :header_tags do %>
+  <!-- Rails 3.0 and below -->
+  <% if defined? observe_field %>
+    <%= javascript_include_tag('scm_utils_prototype', :plugin => 'redmine_scm') %>
+  <!-- Rails 3.1 and above -->
+  <% else %>
+    <%= javascript_include_tag('scm_utils_jquery', :plugin => 'redmine_scm') %>
+  <% end %>
+<% end %>
+
+<% if ScmConfig['force_repository'] %>
+  <%= hidden_field_tag('project[enabled_module_names][]', 'repository') %>
+  <!-- Rails 3.0 and below -->
+  <% if defined? observe_field %>
+    <%= javascript_tag("Event.observe(window, 'load', force_repository_module);") %>
+  <!-- Rails 3.1 and above -->
+  <% else %>
+    <%= javascript_tag("$(document).ready(force_repository_module);") %>
+  <% end %>
+<% end %>
+
+<% if project.new_record? && ScmConfig['auto_create'] %>
+  <% count = [ SubversionCreator, GitCreator, MercurialCreator, BazaarCreator, GithubCreator ].inject(0) do |sum, scm|
+               sum += 1 if scm.enabled?
+               sum
+             end %>
+  <% if (count > 1) || (ScmConfig['auto_create'] != 'force') %>
+    <% options = []
+       options << [ '' ]           if ScmConfig['auto_create'] != 'force'
+       options << [ 'Subversion' ] if SubversionCreator.enabled?
+       options << [ 'Mercurial' ]  if MercurialCreator.enabled?
+       options << [ 'Bazaar' ]     if BazaarCreator.enabled?
+       options << [ 'Git' ]        if GitCreator.enabled?
+       options << [ 'Github' ]     if GithubCreator.enabled? %>
+    <p id="project_scm">
+      <label for="project_scm"><%= l(:field_scm) %> <% if ScmConfig['auto_create'] == 'force' %><span class="required">*</span><% end %></label>
+      <%= select_tag('project[scm]', options_for_select(options, (request.params[:project] ? request.params[:project][:scm] : nil))) %><br />
+      <% if ScmConfig['auto_create'] == 'force' %>
+        <em><%= l(:text_cannot_be_changed_later) %></em>
+      <% end %>
+    </p>
+    <script type="text/javascript">
+      //<![CDATA[
+      // Rails 3.0 and below
+      <% if defined? observe_field %>
+        Event.observe(window, 'load', function() {
+          Event.observe('project_enabled_module_names_repository', 'change', toggle_project_scm_visibility);
+          toggle_project_scm_visibility();
+        });
+      // Rails 3.1 and above
+      <% else %>
+        $(document).ready(function() {
+          $(document).on('change', '#project_enabled_module_names_repository', toggle_project_scm_visibility);
+          toggle_project_scm_visibility();
+        });
+      <% end %>
+      //]]>
+    </script>
+  <% else %>
+    <% if SubversionCreator.enabled? %>
+      <%= hidden_field_tag('project[scm]', 'Subversion') %>
+    <% elsif GitCreator.enabled? %>
+      <%= hidden_field_tag('project[scm]', 'Git') %>
+    <% elsif MercurialCreator.enabled? %>
+      <%= hidden_field_tag('project[scm]', 'Mercurial') %>
+    <% elsif BazaarCreator.enabled? %>
+      <%= hidden_field_tag('project[scm]', 'Bazaar') %>
+    <% elsif GithubCreator.enabled? %>
+      <%= hidden_field_tag('project[scm]', 'Github') %>
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,0 +1,31 @@
+ru:
+  button_create_new_repository: Создать новое хранилище
+
+  label_repository_format: хранилище
+
+  field_scm: Тип хранилища
+  field_github_url: Github URL
+  field_extra_register_hook: Зарегистрировать перехватчик для слежения за изменениями
+
+  text_github_repository_note_new: "(https://github.com/ или просто имя для создания)"
+  text_github_credentials_note: Необходимо для доступа к приватным хранилищам
+  text_github_register_hook_note: Нужен административный достук к хранилищу
+  text_cannot_be_changed_later: Позже невозможно будет поменять.
+  text_cannot_be_used_redmine_auth: Вы не сможете использовать аутентификацию Redmine для этого хранилища.
+  text_scm_creator_not_configured_warning: SCM Creator инсталлирован но не настроен.
+  text_scm_repository_created_by_scm: Хранилище в файловой системе было создано специально для Redmine. Удаляя его запись Вы можете сделать его бесполезным.
+  text_scm_repository_destroy_confirmation: Хотите ли Вы также удалить хранилище с файловой системы?
+
+  warning_github_hook_registration_failed: Не удалось зарегистрировать Github перехватчик.
+
+  activerecord:
+    errors:
+      messages:
+        should_be_of_format_local: должен соответствовать формату "%{repository_format}"
+        already_exists: уже существует
+        scm_not_supported: Этот тип хранилища не поддерживается
+        repository_exists_for_identifier: Хранилище уже существует для этого идентификатора проекта
+        scm_repositories_maximum_count_exceeded: Превышено максимальное количество хранилищ (%{max})
+        scm_local_repositories_denied: Добавление локальных хранилищ было запрещено администратором
+        scm_only_creator: Используйте кнопку "Создать новое хранилище" для создания/добавления хранилища
+        scm_repository_creation_failed: Не удалось создать хранилище
